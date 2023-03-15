@@ -64,22 +64,6 @@ public final class DocDataFile extends DocFile {
 
 //  * √: the same as sample answer
 
-//
-//  @Override
-//  public boolean equals(Object obj) {
-////    Not sure if object equality means whether they reference the same object or whether they have
-////    I swear there are two types of equality, but I forgot what they are called:
-////    referential equality and object equality?
-////    the same values in their properties
-////    Not sure if this is how you downcast obj when instanceof returns true
-//    if (!(obj instanceof DocDataFile docDataFile)) {
-//      return false;
-//    }
-//    System.out.println(docDataFile.getName());
-//    System.out.println(docDataFile.getName() == this.getName());
-//    System.out.println(docDataFile.byteContents == this.byteContents);
-//    return docDataFile.getName() == this.getName() && docDataFile.byteContents == this.byteContents;
-//  }
 
 //  Revise this later
 //  Learn how to use the IDE to simplify the object equality process
