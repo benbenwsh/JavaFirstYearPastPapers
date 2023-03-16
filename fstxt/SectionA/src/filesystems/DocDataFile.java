@@ -52,6 +52,7 @@ public final class DocDataFile extends DocFile {
     return newDocDataFile;
   }
 
+//  * Same as sample answer
   public boolean containsByte(byte b) {
 //    Shit! I don't know how to check if an array contains something
     for (byte bc : byteContents) {
@@ -64,8 +65,7 @@ public final class DocDataFile extends DocFile {
 
 //  * √: the same as sample answer
 
-
-//  Revise this later
+//  Weakness: Object equality
 //  Learn how to use the IDE to simplify the object equality process
 //  * Sample answer did this method
   @Override
@@ -75,8 +75,10 @@ public final class DocDataFile extends DocFile {
     return getSize() == that.getSize() && Arrays.equals(byteContents, that.byteContents);
   }
 
-
-//  Must use hashcode to perform object equality
+//  If you override equals(), you must override hashCode() to achieve
+//  o1.equals(o2) => o1.hashCode() == o2.hashCode()
+//  The default implementation of hashCode() is to compare the reference of the two objects.
+//  Therefore, you must override hashCode in this case
   @Override
   public int hashCode() {
     int result = Objects.hash(getSize());

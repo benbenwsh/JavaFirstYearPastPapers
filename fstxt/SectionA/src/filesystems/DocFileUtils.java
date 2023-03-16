@@ -55,9 +55,7 @@ public class DocFileUtils {
 
   public static Optional<DocDataFile> searchForByte(DocFile root, byte someByte) {
     // TODO: implement as part of Question 4
-//    Not sure if this counts as down-casting?
-//    Is it even possible to do it without down-casting?
-//    Use DocFile methods instead of instanceof
+//    * Use the methods defined previously to downcast
     if (root instanceof DocDataFile docDataFile) {
       return (docDataFile.containsByte(someByte)) ? Optional.of(docDataFile) : Optional.empty();
     }
@@ -65,13 +63,11 @@ public class DocFileUtils {
 //    Smart way of using reduce
 //    Took a while to come up with reduce, more practices on streams
 //    See if I can simplify further
-    return root
-            .asDirectory()
-            .getAllFiles()
-            .stream()
+    return root.asDirectory().getAllFiles().stream()
             .map(docFile -> searchForByte(docFile, someByte))
             .filter(docFile -> !docFile.isEmpty())
             .map(docFile -> docFile.get())
             .reduce((x1, x2) -> x1);
+//    * This is better than model answer, but use findFirst instead of reduce
   }
 }

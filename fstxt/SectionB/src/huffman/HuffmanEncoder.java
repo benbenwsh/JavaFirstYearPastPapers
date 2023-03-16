@@ -13,6 +13,9 @@ public class HuffmanEncoder {
     this.word2bitsequence = word2bitSequence;
   }
 
+//  My implementation of this method is literally the same as the model answer, if not better,
+//  as the only difference is that I checked whether it is an internalNode as well, and throws
+//  an error if it is neither
   public static HuffmanEncoder buildEncoder(Map<String, Integer> wordCounts) {
     //TODO: complete the implementation of this method (Q1)
 
@@ -43,7 +46,6 @@ public class HuffmanEncoder {
       queue.offer(new HuffmanInternalNode(left, right));
     }
 
-
     HuffmanNode root = queue.poll();
     Map<String, String> word2bitSequence = new HashMap<>();
     dfs(root, "", word2bitSequence);
@@ -51,8 +53,7 @@ public class HuffmanEncoder {
     return new HuffmanEncoder(root, word2bitSequence);
   }
 
-
-//  Not sure if it is good practice to use private static method as a helper method to a public static method
+//  It is alright to do private static
   private static void dfs(HuffmanNode root, String encoding, Map<String, String> result) {
     if (root instanceof HuffmanLeaf leaf) {
       result.put(leaf.getWord(), encoding);
@@ -64,12 +65,14 @@ public class HuffmanEncoder {
     }
   }
 
-
+//  * The model answer uses StringBuilder instead of string concatenation
+//  * Stack Overflow informs me that StringBuilder is faster and consumes less memory
   public String compress(List<String> text) {
     assert text != null && text.size() > 0;
 
-    String encoding = "";
     //TODO: implement this method (Q2)
+    String encoding = "";
+
     for (String word : text) {
       if (!word2bitsequence.containsKey(word)) {
         throw new HuffmanEncoderException("The input word is not in the map");
@@ -79,16 +82,27 @@ public class HuffmanEncoder {
     }
 
     return encoding;
+
+//    StringBuilder sb = new StringBuilder();
+//
+//    for (String word : text) {
+//      if (!word2bitsequence.containsKey(word)) {
+//        throw new HuffmanEncoderException("The input word is not in the map");
+//      }
+//      sb.append(word2bitsequence.get(word));
+//    }
+//
+//    return sb.toString();
   }
 
-
-//  Disgusting code here, review!!! Must become faster
+//  * Disgusting code! Model answer uses a private helper function that for
+//  * converting the first part of the encoding into one word
+//  * The helper function implementation is better as it is much cleaner
   public List<String> decompress(String compressedText) {
     assert compressedText != null && compressedText.length() > 0;
 
-    // What happens if there is no leaf node? or some other issues?
-
     //TODO: implement this method (Q3)
+
     List<String> result = new ArrayList<>();
     HuffmanNode currNode = root;
 //    Why is it taking me so long to implement this

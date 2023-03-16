@@ -14,9 +14,8 @@ public class DocDirectory extends DocFile {
    */
   private final Set<DocFile> directory;
   private final int size;
-//  Inclined towards using Lists
-//  Should use Set instead because the files are all distinct
-//  What happens if there are non-distinct files added?
+
+//  * Wrongly used List instead of Set at the start because forgot about the keyword 'distinct'
   public DocDirectory(String name) {
     super(name);
     directory = new HashSet<>();
@@ -55,6 +54,12 @@ public class DocDirectory extends DocFile {
   public DocFile duplicate() {
     DocDirectory newDocDirectory = new DocDirectory(getName());
 
+//    * Model answer uses stream, but for loop is fine
+//    * Not familiar with forEach in stream. Does it have an effect on the stream?
+//    * My attempt:
+//    * directory.stream().forEach(x -> newDocDirectory.addFile(x.duplicate()));
+//    * Model answer did newDocDirectory.directory.addAll(...)
+//    * Although directory is private it can access it because we're in the class right now
     for (DocFile docFile : directory) {
       newDocDirectory.addFile(docFile.duplicate());
     }
@@ -62,8 +67,9 @@ public class DocDirectory extends DocFile {
   }
 
   public boolean containsFile(String name) {
-//    Is the way you loop through a list the same as that of arrays
-//    Is there a one-liner for this?
+//    * Model answer uses anyMatch
+//    * Weakness: methods in stream
+//    return directory.stream().anyMatch(x -> x.getName() == name);
     for (DocFile file : directory) {
       if (file.getName() == name) {
         return true;
@@ -77,7 +83,8 @@ public class DocDirectory extends DocFile {
   }
 
   public Set<DocDirectory> getDirectories() {
-//    Has to be a shorter way of writing this
+//    * X: Model answer uses method isDirectory and asDirectory
+//    * Use methods defined
     return directory.stream()
                     .filter(docFile -> docFile instanceof DocDirectory)
                     .map(docFile -> (DocDirectory) docFile).collect(Collectors.toSet());
@@ -90,35 +97,26 @@ public class DocDirectory extends DocFile {
   }
 
   public void addFile(DocFile file) {
-//    Should've used object equality stuffs to make this work
-//    Actually, I've already defined a method called containsFile
+//    Wanted to implement object equality, but realised that I have containsFile()
     if (containsFile(file.getName())) {
       throw new IllegalArgumentException();
     } else {
+//      * Don't use else because the program terminates after throwing an exception
       directory.add(file);
     }
   }
 
   public boolean removeFile(String filename) {
-//      I feel like I have to implement object equality right?
-//      Can't use .remove() in Set because I don't know what the type of the file to be
-//      removed is
-//    Not sure if it returns false if nothing has been removed. Requires testing
+//    * Better than model answer: good job using methods of Set to make it more readable
     return directory.removeIf(docFile -> docFile.getName() == filename);
   }
 
   public DocFile getFile(String filename) {
-    for (DocFile docFile : directory) {
-      if (docFile.getName() == filename) {
-        return docFile;
-      }
-    }
-//    Why doesn't functional programming work here?
-//    return directory.stream()
-//            .filter(docFile -> docFile.getName() != filename)
-//            .collect(Collectors.toList())
-//            .get(0);
-    return null;
+//    * Turns out I made the stupid mistake of writing != instead of ==
+    return directory.stream()
+            .filter(docFile -> docFile.getName() == filename)
+            .collect(Collectors.toList())
+            .get(0);
+//    * Better to do findFirst, which returns an optional, and then get()
   }
-
 }

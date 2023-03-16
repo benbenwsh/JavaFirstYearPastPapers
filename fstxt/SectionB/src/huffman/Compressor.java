@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Compressor {
 
-  public static final String ROMEO_AND_JULIET = "./resources/RomeoAndJuliet.clean.txt";
+  public static final String ROMEO_AND_JULIET = "/Users/benjaminwong/Desktop/IC CS/40009 - Practical/Java/Past Papers/JavaFirstYearPastPapers/fstxt/SectionB/resources/RomeoAndJuliet.clean.txt";
 
   public static void main(String[] args) {
     List<String> words = Utility.getWords(Compressor.ROMEO_AND_JULIET);
@@ -30,5 +30,4 @@ public class Compressor {
     System.out.println("The final length is:   " + compressedLength);
     System.out.println("Compression ratio:     " + compressionRate * 100 + " times");
   }
-
 }

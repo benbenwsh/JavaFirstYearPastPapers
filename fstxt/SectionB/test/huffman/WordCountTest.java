@@ -30,6 +30,7 @@ public class WordCountTest {
         .unmodifiableList(Arrays.asList("romeo", "romeo", "wherefore", "art", "thou", "romeo"));
     final Map<String, Integer> expectedWordCounts = romeoAndJuliet.stream()
         .collect(Collectors.toMap(w -> w, w -> 1, Integer::sum));
+    System.out.println(expectedWordCounts);
     assertEquals(expectedWordCounts, Utility.countWords(romeoAndJuliet));
   }
 
