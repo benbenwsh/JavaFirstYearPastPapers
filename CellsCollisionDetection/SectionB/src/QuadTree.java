@@ -34,6 +34,10 @@ public class QuadTree implements QuadTreeInterface {
    */
   public void add(Object2D elem) {
     // TODO: Implement this method for Question 2
+//    * Better than model answer: model answer's addHelper returns null,
+//    * It simply adds the elem to the list values directly
+    QuadTreeNode quadTreeNode = addHelper(root, elem);
+    quadTreeNode.values.add(quadTreeNode.values.size()+1, elem);
   }
 
   /**
@@ -42,9 +46,31 @@ public class QuadTree implements QuadTreeInterface {
    * @param elem the 2D-object to add to the tree.
    * @param node the root of the current subtree to visit
    */
+//  Ran out of time
   private QuadTreeNode addHelper(QuadTreeNode node, Object2D elem) {
     // TODO: Implement this method for Question 2
-    return null;
+    if (node.isLeaf()) {
+      if (node.values.size() < nodeCapacity) {
+        return node;
+      } else {
+        node.subdivide();
+        while (!node.values.isEmpty()) {
+          add(node.values.get(1));
+          node.values.remove(1);
+        }
+        return addHelper(node, elem);
+      }
+    } else {
+      if (node.NE.region.covers(elem.getCenter())) {
+        return addHelper(node.NE, elem);
+      } else if (node.NW.region.covers(elem.getCenter())) {
+        return addHelper(node.NW, elem);
+      } else if (node.SE.region.covers(elem.getCenter())) {
+        return addHelper(node.SE, elem);
+      } else {
+        return addHelper(node.SW, elem);
+      }
+    }
   }
 
   /**
@@ -56,9 +82,13 @@ public class QuadTree implements QuadTreeInterface {
    * @param region axies-aligned bounding box region
    * @return a list of 2D-objects
    */
+
+//  * Same if not better than model answer
   public ListInterface<Object2D> queryRegion(AABB region) {
     // TODO: Implement this method for Question 3
-    return null;
+    ListInterface<Object2D> objects = new ListArrayBased<>();
+    queryRegionHelper(root, region, objects);
+    return objects;
   }
 
   /**
@@ -74,6 +104,30 @@ public class QuadTree implements QuadTreeInterface {
   private void queryRegionHelper(QuadTreeNode node, AABB region,
       ListInterface<Object2D> bucket) {
     // TODO: Implement this method for Question 3
+    if (node.isLeaf()) {
+      for (int i=1; i<node.values.size()+1; i++) {
+        Object2D currObject = node.values.get(i);
+//        Do you need to worry about duplicates?
+//        What if there is an object lying at the border of two quadrants
+        if (region.covers(currObject.getCenter()) && !bucket.contains(currObject)) {
+//          * Model answer just adds to position 1
+//          * Because there is a makeRoom() so every other elements make
+//          * room for the new object
+          bucket.add(bucket.size()+1, currObject);
+        }
+      }
+    } else {
+      QuadTreeNode[] children = {node.NE, node.NW, node.SE, node.SW};
+
+      for (QuadTreeNode child : children) {
+        if (child.region.covers(region.topLeft())
+                || child.region.covers(region.bottomLeft())
+                || child.region.covers(region.topRight())
+                || child.region.covers(region.bottomRight())) {
+          queryRegionHelper(child, region, bucket);
+        }
+      }
+    }
   }
 
   /**

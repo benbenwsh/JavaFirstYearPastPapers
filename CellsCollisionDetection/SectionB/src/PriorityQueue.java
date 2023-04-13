@@ -4,6 +4,7 @@ import java.util.Iterator;
  * You must implement the <code>remove</code> and <code>PQRebuild</code> methods.
  */
 
+// Shit, don't know what minHeap is
 public class PriorityQueue<T extends Comparable<T>> implements
     PriorityQueueInterface<T> {
 
@@ -13,6 +14,7 @@ public class PriorityQueue<T extends Comparable<T>> implements
 
 
   public PriorityQueue() {
+//    That was how to do it in the last exam
     items = (T[]) new Comparable[max_size];
     size = 0;
   }
@@ -74,6 +76,10 @@ public class PriorityQueue<T extends Comparable<T>> implements
    */
   public void remove() {
     // TODO: Implement this method for Question 1
+    size--;
+    items[0] = items[size];
+    items[size] = null;
+    PQRebuild(0);
   }
 
   /**
@@ -81,6 +87,18 @@ public class PriorityQueue<T extends Comparable<T>> implements
    */
   private void PQRebuild(int root) {
     // TODO: Implement this method for Question 1
+    int child = 2 * root + 1;
+    if (child < size) {
+      if (child + 1 < size) {
+        child += items[child].compareTo(items[child + 1]) <= 0 ? 0 : 1;
+      }
+      if (items[root].compareTo(items[child]) > 0) {
+        T temp = items[root];
+        items[root] = items[child];
+        items[child] = temp;
+        PQRebuild(child);
+      }
+    }
   }
 
 

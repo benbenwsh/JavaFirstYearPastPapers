@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -49,6 +50,9 @@ public class ParallelCollisionDetection {
    * // that there is no collision between the points, and we halt and return
    * // true.
    */
+
+//  Synchronised QuadTree::contains
+
   private static boolean checkObjects(
       PriorityQueueInterface<Object2D> sortedPoints, AABB region) {
 
@@ -74,8 +78,32 @@ public class ParallelCollisionDetection {
      * this one
      */
 
-    
-    return false;
+//    Not familiar with implementing threads
+//    Where do I implement the run method?
+//    Do I need to create a new class that implements
+//    Thread?
+//    Where do I write the methods that have locks/serialized?
+//    In the class that extends Thread?
+    Thread[] threads = new ParallelCollisionDetector[3];
+    QuadTree quadTree = new QuadTree(region, 4);
+    AtomicBoolean collisionFree = new AtomicBoolean(true);
+
+    for (int i=0; i<3; i++) {
+      threads[i] = new ParallelCollisionDetector(sortedPoints, region, quadTree, collisionFree);
+    }
+
+    Arrays.stream(threads).forEach(x -> x.run());
+
+//    Is there a better way to implement the try catch block?
+    Arrays.stream(threads).forEach(x -> {
+      try {
+        x.join();
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    });
+
+    return collisionFree.get();
 
     /*
      * Justify here your implementation choice versus other valid alternatives

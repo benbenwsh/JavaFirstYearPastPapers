@@ -41,9 +41,28 @@ public class CollisionDetection {
    * // that there is no collision between the points, and we halt and return
    * // true.
    */
+
+//  * Same as model answer :)
   private static boolean checkObjects(
       PriorityQueueInterface<Object2D> sortedPoints, AABB region) {
     // TODO: Implement this method for Question 4
+    QuadTree quadTree = new QuadTree(region, 4);
+
+    while (!sortedPoints.isEmpty()) {
+      Object2D currObject = sortedPoints.peek();
+      sortedPoints.remove();
+      Point2D topLeft = new Point2D(currObject.getCenter().x - currObject.getSize(),
+              currObject.getCenter().y + currObject.getSize());
+      Point2D bottomRight = new Point2D(currObject.getCenter().x + currObject.getSize(),
+              currObject.getCenter().y - currObject.getSize());
+      AABB safetyRegion = new AABB(topLeft, bottomRight);
+
+      if (quadTree.queryRegion(safetyRegion).isEmpty()) {
+        quadTree.add(currObject);
+      } else {
+        return false;
+      }
+    }
     return true;
   }
 
